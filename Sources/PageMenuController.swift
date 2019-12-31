@@ -68,7 +68,10 @@ open class PageMenuController: UIViewController {
                                                didSelectMenuItem: index,
                                                direction: direction.toPageMenuNavigationDirection)
         }
-
+        tabView.pageItemDoubleTapBlock = { [weak self] index in
+            guard let self = self else { return }
+            self.delegate?.pageMenuController?(self, didDoubleTapMenuItem: index)
+        }
         return tabView
     }()
 

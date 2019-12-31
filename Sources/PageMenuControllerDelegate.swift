@@ -29,4 +29,8 @@ import Foundation
     @objc optional func pageMenuController(_ pageMenuController: PageMenuController,
                                            didSelectMenuItem index: Int,
                                            direction: PageMenuNavigationDirection)
+    
+    /// The menu item of page view controller are double tapped.
+    @objc optional func pageMenuController(_ pageMenuController: PageMenuController,
+                                           didDoubleTapMenuItem index: Int)
 }

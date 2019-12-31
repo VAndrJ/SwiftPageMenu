@@ -14,6 +14,8 @@ class TabMenuItemCell: UICollectionViewCell {
         return "TabMenuItemCell"
     }
 
+    private var index: Int?
+    private var onDoubleTap: ((Int) -> Void)?
     var options: PageMenuOptions?
 
     fileprivate var itemLabel: UILabel = {
@@ -69,18 +71,31 @@ class TabMenuItemCell: UICollectionViewCell {
         self.itemLabel.translatesAutoresizingMaskIntoConstraints = false
         self.itemLabel.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor).isActive = true
         self.itemLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
+        let doubleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onDoubleTapAction))
+        doubleTapGestureRecognizer.numberOfTouchesRequired = 1
+        doubleTapGestureRecognizer.numberOfTapsRequired = 2
+        doubleTapGestureRecognizer.delaysTouchesBegan = true
+        addGestureRecognizer(doubleTapGestureRecognizer)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(title: String, options: PageMenuOptions) {
+    func configure(title: String, options: PageMenuOptions, index: Int, onDoubleTap: @escaping (Int) -> Void) {
         self.options = options
         self.itemLabel.font = options.font
         self.itemLabel.text = title
         self.itemLabel.invalidateIntrinsicContentSize()
         self.invalidateIntrinsicContentSize()
+        self.index = index
+        self.onDoubleTap = onDoubleTap
+    }
+    
+    @objc
+    private func onDoubleTapAction() {
+        guard let index = index else { return }
+        onDoubleTap?(index)
     }
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {

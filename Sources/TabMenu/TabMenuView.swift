@@ -12,6 +12,7 @@ class TabMenuView: UIView {
 
     /// This callback function is called when tab menu item is selected
     var pageItemPressedBlock: ((_ index: Int, _ direction: EMPageViewControllerNavigationDirection) -> Void)?
+    var pageItemDoubleTapBlock: ((_ index: Int) -> Void)?
 
     /// tab menu titles
     var pageTabItems: [String] = [] {
@@ -393,7 +394,9 @@ extension TabMenuView: UICollectionViewDataSource {
 
     func configureCell(_ cell: TabMenuItemCell, indexPath: IndexPath) {
         let fixedIndex = self.isInfinite ? indexPath.item % self.pageTabItemsCount : indexPath.item
-        cell.configure(title: self.pageTabItems[fixedIndex], options: self.options)
+        cell.configure(title: self.pageTabItems[fixedIndex], options: self.options, index: fixedIndex, onDoubleTap: { [weak self] index in
+            self?.pageItemDoubleTapBlock?(index)
+        })
         if fixedIndex == (self.currentIndex % self.pageTabItemsCount) {
             cell.highlightTitle()
             cell.isDecorationHidden = false
