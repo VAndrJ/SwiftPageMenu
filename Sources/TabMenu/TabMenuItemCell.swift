@@ -74,7 +74,6 @@ class TabMenuItemCell: UICollectionViewCell {
         let doubleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onDoubleTapAction))
         doubleTapGestureRecognizer.numberOfTouchesRequired = 1
         doubleTapGestureRecognizer.numberOfTapsRequired = 2
-        doubleTapGestureRecognizer.delaysTouchesBegan = true
         addGestureRecognizer(doubleTapGestureRecognizer)
     }
 
