@@ -21,6 +21,7 @@ class TabMenuView: UIView {
             self.beforeIndex = self.pageTabItems.count
             self.collectionView.reloadData()
             self.cursorView.isHidden = self.pageTabItems.isEmpty
+            self.updateCurrentIndex(currentIndex, shouldScroll: true)
         }
     }
 
