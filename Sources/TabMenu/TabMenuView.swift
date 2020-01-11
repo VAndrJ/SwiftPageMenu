@@ -297,43 +297,49 @@ extension TabMenuView {
      - parameter shouldScroll:
      */
     fileprivate func moveCurrentBarView(_ indexPath: IndexPath, animated: Bool, shouldScroll: Bool) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            var targetIndexPath = indexPath
-            self.distance = 0
-            if shouldScroll {
-                if self.isInfinite {
-                    targetIndexPath = IndexPath(item: indexPath.item % self.pageTabItemsCount + self.pageTabItemsCount, section: 0)
-                    self.collectionView.scrollToItem(
-                        at: targetIndexPath,
-                        at: .centeredHorizontally,
-                        animated: animated)
-                } else {
-                    targetIndexPath = indexPath
-                    self.collectionView.scrollToItem(
-                        at: indexPath,
-                        at: .centeredHorizontally,
-                        animated: animated)
-                }
-                self.layoutIfNeeded()
-                self.collectionViewContentOffsetX = nil
-                self.currentBarViewWidth = 0.0
+        var targetIndexPath = indexPath
+
+        self.distance = 0
+
+        if shouldScroll {
+            if self.isInfinite {
+                targetIndexPath = IndexPath(item: indexPath.item % self.pageTabItemsCount + self.pageTabItemsCount, section: 0)
+                self.collectionView.scrollToItem(
+                    at: targetIndexPath,
+                    at: .centeredHorizontally,
+                    animated: animated)
+            } else {
+                targetIndexPath = indexPath
+                self.collectionView.scrollToItem(
+                    at: indexPath,
+                    at: .centeredHorizontally,
+                    animated: animated)
             }
-            if let cell = self.collectionView.cellForItem(at: targetIndexPath) as? TabMenuItemCell {
-                if animated && shouldScroll {
-                    cell.highlightTitle()
-                    cell.isDecorationHidden = false
-                }
-                self.cursorView.updateWidth(width: cell.frame.width)
-                if !self.isInfinite {
-                    self.cursorView.updatePosition(x: cell.frame.origin.x)
-                }
-                if !animated && shouldScroll {
-                    cell.highlightTitle()
-                    cell.isDecorationHidden = false
-                }
-            }
-            self.beforeIndex = self.currentIndex
+            self.layoutIfNeeded()
+            self.collectionViewContentOffsetX = nil
+            self.currentBarViewWidth = 0.0
         }
+
+        if let cell = collectionView.cellForItem(at: targetIndexPath) as? TabMenuItemCell {
+            if animated && shouldScroll {
+                cell.highlightTitle()
+                cell.isDecorationHidden = false
+            }
+
+            self.cursorView.updateWidth(width: cell.frame.width)
+
+            if !isInfinite {
+                self.cursorView.updatePosition(x: cell.frame.origin.x)
+            }
+
+            if !animated && shouldScroll {
+                cell.highlightTitle()
+                cell.isDecorationHidden = false
+            }
+
+        }
+
+        self.beforeIndex = self.currentIndex
     }
 
     /**
