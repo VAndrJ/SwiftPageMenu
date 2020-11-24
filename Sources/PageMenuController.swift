@@ -37,7 +37,7 @@ open class PageMenuController: UIViewController {
         return self.viewControllers.firstIndex(of: viewController)
     }
 
-    fileprivate lazy var pageViewController: EMPageViewController = {
+    public lazy var pageViewController: EMPageViewController = {
         let vc = EMPageViewController(navigationOrientation: .horizontal)
 
         vc.view.backgroundColor = .clear
