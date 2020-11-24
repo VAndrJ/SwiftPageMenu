@@ -120,7 +120,7 @@ import UIKit
 }
 
 /// Manages page navigation between view controllers. View controllers can be navigated via swiping gestures, or called programmatically.
-class EMPageViewController: UIViewController, UIScrollViewDelegate {
+public class EMPageViewController: UIViewController, UIScrollViewDelegate {
 
     /// The object that provides view controllers on an as-needed basis throughout the navigation of the page view controller.
     ///
