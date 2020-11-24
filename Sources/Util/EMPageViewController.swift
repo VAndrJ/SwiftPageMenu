@@ -174,7 +174,7 @@ public class EMPageViewController: UIViewController, UIScrollViewDelegate {
     open private(set) var scrolling = false
 
     /// The direction the page controller is scrolling towards.
-    open private(set) var navigationDirection: EMPageViewControllerNavigationDirection?
+    private(set) var navigationDirection: EMPageViewControllerNavigationDirection?
 
     private var adjustingContentOffset = false // Flag used to prevent isScrolling delegate when shifting scrollView
     private var loadNewAdjoiningViewControllersOnFinish = false
@@ -202,7 +202,7 @@ public class EMPageViewController: UIViewController, UIScrollViewDelegate {
      - parameter direction: The direction of the navigation and animation, if applicable.
      - parameter completion: A block that's called after the transition is finished. The block parameter `transitionSuccessful` is `true` if the transition to the selected view controller was completed successfully.
      */
-    open func selectViewController(_ viewController: UIViewController, direction: EMPageViewControllerNavigationDirection, animated: Bool, completion: ((_ transitionSuccessful: Bool) -> Void)?) {
+    func selectViewController(_ viewController: UIViewController, direction: EMPageViewControllerNavigationDirection, animated: Bool, completion: ((_ transitionSuccessful: Bool) -> Void)?) {
 
         if viewController == self.selectedViewController {
             return
