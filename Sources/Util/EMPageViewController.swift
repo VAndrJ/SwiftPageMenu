@@ -119,6 +119,15 @@ import UIKit
     case vertical
 }
 
+public class IgnoringAreaScrollView: UIScrollView {
+    public var ignoreFrame: CGRect = .zero
+    
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        isScrollEnabled = !ignoreFrame.contains(point)
+        return super.hitTest(point, with: event)
+    }
+}
+
 /// Manages page navigation between view controllers. View controllers can be navigated via swiping gestures, or called programmatically.
 public class EMPageViewController: UIViewController, UIScrollViewDelegate {
 
@@ -141,8 +150,8 @@ public class EMPageViewController: UIViewController, UIScrollViewDelegate {
 
     /// The underlying `UIScrollView` responsible for scrolling page views.
     /// - important: Properties should be set with caution to prevent unexpected behavior.
-    open private(set) lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
+    open private(set) lazy var scrollView: IgnoringAreaScrollView = {
+        let scrollView = IgnoringAreaScrollView()
 
         scrollView.isPagingEnabled = true
         scrollView.scrollsToTop = false
@@ -668,19 +677,28 @@ public class EMPageViewController: UIViewController, UIScrollViewDelegate {
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         self.transitionAnimated = true
     }
+    
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            endScroll(scrollView)
+        }
+    }
 
     open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         // setContentOffset is called to center the selected view after bounces
         // This prevents yucky behavior at the beginning and end of the page collection by making sure setContentOffset is called only if...
-
+        endScroll(scrollView)
+    }
+    
+    private func endScroll(_ scrollView: UIScrollView) {
         if self.isOrientationHorizontal {
-            if  (self.beforeViewController != nil && self.afterViewController != nil) || // It isn't at the beginning or end of the page collection
+            if (self.beforeViewController != nil && self.afterViewController != nil) || // It isn't at the beginning or end of the page collection
                 (self.afterViewController != nil && self.beforeViewController == nil && scrollView.contentOffset.x > abs(scrollView.contentInset.left)) || // If it's at the beginning of the collection, the decelleration can't be triggered by scrolling away from, than torwards the inset
                 (self.beforeViewController != nil && self.afterViewController == nil && scrollView.contentOffset.x < abs(scrollView.contentInset.right)) { // Same as the last condition, but at the end of the collection
                 scrollView.setContentOffset(CGPoint(x: self.view.bounds.width, y: 0), animated: true)
             }
         } else {
-            if  (self.beforeViewController != nil && self.afterViewController != nil) || // It isn't at the beginning or end of the page collection
+            if (self.beforeViewController != nil && self.afterViewController != nil) || // It isn't at the beginning or end of the page collection
                 (self.afterViewController != nil && self.beforeViewController == nil && scrollView.contentOffset.y > abs(scrollView.contentInset.top)) || // If it's at the beginning of the collection, the decelleration can't be triggered by scrolling away from, than torwards the inset
                 (self.beforeViewController != nil && self.afterViewController == nil && scrollView.contentOffset.y < abs(scrollView.contentInset.bottom)) { // Same as the last condition, but at the end of the collection
                 scrollView.setContentOffset(CGPoint(x: 0, y: self.view.bounds.height), animated: true)
